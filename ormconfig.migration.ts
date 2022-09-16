@@ -1,7 +1,7 @@
 import { DB, } from './config/config';
 
 /* eslint-disable prettier/prettier */
-export const config = {
+export const ORM_CONFIG = {
   type: 'mysql',
   host: DB.HOST,
   port: DB.PORT,

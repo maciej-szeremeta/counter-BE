@@ -1,6 +1,6 @@
 import { DB, } from './config/config';
 
-export const config = {
+export const ORM_CONFIG = {
   type: 'mysql',
   host: DB.HOST,
   port: DB.PORT,
