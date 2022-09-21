@@ -9,6 +9,6 @@ import { UserModule, } from './user/user.module';
 @Module({
   imports: [ TypeOrmModule.forRoot(ORM_CONFIG as TypeOrmModuleOptions), UserModule, AuthModule, ],
   controllers: [ AppController, ],
-  providers: [ AppService, ],
+  providers: [ AppService,],
 })
 export class AppModule {}
