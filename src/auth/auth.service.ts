@@ -56,7 +56,7 @@ export class AuthService {
       }
 
       if (!user || !validPwd) {
-        return res.json({ error: 'Nieprawidłowe dane logowania! pwd', });
+        return res.json({ error: [ 'Nieprawidłowe dane logowania!', ], });
       }
 
       if(!user.isActive){
@@ -71,7 +71,7 @@ export class AuthService {
           path:COOKIE.PATH,
           httpOnly: COOKIE.HTTPONLY,
         })
-        .json({ msg: true, email:user.email, } );
+        .json({ id: user.id, email:user.email, role:user.role, } );
     }
     catch (err) {
       return res.json({ error: err.message, });
@@ -136,7 +136,7 @@ export class AuthService {
       await userUpdate.save();
       try {
         await this.mailService.gratyMail(
-          userUpdate.email, 'Witaj Użytkowniku w aplikacji HH 17! Potwierdz Email', './graty', {
+          userUpdate.email, 'Witaj Użytkowniku w aplikacji! Potwierdz Email', './graty', {
             email: userUpdate.email,
           });
       }
@@ -171,7 +171,7 @@ export class AuthService {
     await userResetPwd.save();
     try {
       await this.mailService.resetPwdMail(
-        userResetPwd.email, 'Witaj w aplikacji HH 17! Potwierdz Email', './resetPwd', {
+        userResetPwd.email, 'Witaj w aplikacji! Potwierdz Email', './resetPwd', {
           role: 'Użytkowniku',
           userId: userResetPwd.id,
           tokenId: userResetPwd.currentTokenId,
