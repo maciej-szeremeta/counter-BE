@@ -1,1 +1,1 @@
-export type LoginUserRes = { error: string[]; } | { id: string; email: string; role: string; }
+export type LoginUserRes = { error: string[]; } | { msg: true; id: string; email: string; role: string; }

@@ -71,7 +71,7 @@ export class AuthService {
           path:COOKIE.PATH,
           httpOnly: COOKIE.HTTPONLY,
         })
-        .json({ id: user.id, email:user.email, role:user.role, } );
+        .json({ msg:true, id: user.id, email:user.email, role:user.role, } );
     }
     catch (err) {
       return res.json({ error: err.message, });
