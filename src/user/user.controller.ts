@@ -36,8 +36,8 @@ export class UserController {
 
   @Get('/')
   @UsePipes(ValidationPipe)
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles(UserRoleEnum.ADMIN)
+  // @UseGuards(AuthGuard('jwt'), RolesGuard)
+  // @Roles(UserRoleEnum.ADMIN)
   async findAllUsers():Promise<GetAllUsersRes> {
     return this.userService.findAll();
   }
