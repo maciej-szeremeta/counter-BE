@@ -1,9 +1,9 @@
-import { Body, Controller, Post, UseGuards, UsePipes, ValidationPipe, } from '@nestjs/common';
+import { Body, Controller, Post, Get, UseGuards, UsePipes, ValidationPipe, } from '@nestjs/common';
 import { AuthGuard, } from '@nestjs/passport';
 import { UserRoleEnum, } from '../interface/user-role';
 import { Roles, } from '../decorators/roles.decorator';
 import { RolesGuard, } from '../guards/roles.guard';
-import { UserRegisterRes, } from '../interface/user';
+import { GetAllUsersRes, UserRegisterRes, } from '../interface/user';
 import { RegisterAdminDto, } from './dto/register-admin.dto';
 import { UserService, } from './user.service';
 import { RegisterUserDto, } from './dto/register-user.dto';
@@ -27,11 +27,18 @@ export class UserController {
   @UsePipes(ValidationPipe)
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(UserRoleEnum.ADMIN)
-    async createHr(
+    async createUser(
       @Body() createUser: RegisterUserDto,
       @UserObj() user: User
     ): Promise<UserRegisterRes> {
       return this.userService.registerUser(createUser, user);
     }
 
+  @Get('/')
+  @UsePipes(ValidationPipe)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(UserRoleEnum.ADMIN)
+  async findAllUsers():Promise<GetAllUsersRes> {
+    return this.userService.findAll();
+  }
 }
