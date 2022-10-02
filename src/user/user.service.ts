@@ -63,7 +63,7 @@ export class UserService {
     registerUser.pwdHash = await hashPwd(newUser.pwd);
     registerUser.isActive= true;
     await registerUser.save();
-    registerUser.createdBy = registerUser.id;
+    registerUser.createdBy = userRole.id;
     registerUser.role = UserRoleEnum.USER;
     await registerUser.save();
     return this.filterUser(registerUser);
