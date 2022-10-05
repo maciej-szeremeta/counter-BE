@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Get, UseGuards, UsePipes, ValidationPipe, } from '@nestjs/common';
+import { Body, Controller, Post, Get, UseGuards, UsePipes, ValidationPipe, Delete, Param, } from '@nestjs/common';
 import { AuthGuard, } from '@nestjs/passport';
 import { UserRoleEnum, } from '../interface/user-role';
 import { Roles, } from '../decorators/roles.decorator';
@@ -40,5 +40,14 @@ export class UserController {
   @Roles(UserRoleEnum.ADMIN)
   async findAllUsers():Promise<GetAllUsersRes> {
     return this.userService.findAll();
+  }
+
+  @Delete('/:id')
+  @UsePipes(ValidationPipe)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(UserRoleEnum.ADMIN)
+  async DeleteUser(
+    @Param('id') id: string) {
+    return this.userService.remove(id);
   }
 }

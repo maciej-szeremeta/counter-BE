@@ -16,3 +16,8 @@ export interface UserWithPwd extends UserEntity{
 export type UserRegisterRes = Pick<UserEntity, 'id' | 'email'>;
 
 export type GetAllUsersRes = UserEntity[];
+
+export interface DeletedUserRes {
+   msg: boolean;
+   user: string;
+}
