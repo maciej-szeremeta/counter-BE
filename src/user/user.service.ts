@@ -1,5 +1,5 @@
 import { hashPwd, } from './../utils/hash-pwd';
-import { Injectable, ConflictException, } from '@nestjs/common';
+import { Injectable, ConflictException, NotFoundException, } from '@nestjs/common';
 import { RegisterAdminDto, } from './dto/register-admin.dto';
 import { User, } from './entities/user.entity';
 import { UserRoleEnum, } from '../interface/user-role';
@@ -80,5 +80,14 @@ export class UserService {
       const { pwdHash, ...restData } = user;
       return restData;
     });
+  }
+
+  async remove(id: string) {
+    const deletedUser = await User.findOneBy({ id, });
+    if (!deletedUser) {
+      throw new NotFoundException(`User ${id} nie istnieje`);
+    }
+    await User.delete(id);
+    return { message:true, user:deletedUser.email, };
   }
 }
