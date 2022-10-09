@@ -3,7 +3,7 @@ import { Injectable, ConflictException, NotFoundException, } from '@nestjs/commo
 import { RegisterAdminDto, } from './dto/register-admin.dto';
 import { User, } from './entities/user.entity';
 import { UserRoleEnum, } from '../interface/user-role';
-import { GetAllUsersRes, UserEntity, UserRegisterRes, } from '../interface/user';
+import { GetAllUsersRes, GetOneUsersRes, UserEntity, UserRegisterRes, } from '../interface/user';
 import { RegisterUserDto, } from './dto/register-user.dto';
 import { v4 as uuid, } from 'uuid';
 
@@ -80,6 +80,17 @@ export class UserService {
       const { pwdHash, ...restData } = user;
       return restData;
     });
+  }
+
+  async getOne(id: string): Promise<GetOneUsersRes> {
+    const user = await User.findOneBy({ id, });
+    if (!user) {
+      throw new NotFoundException(`User ${id} nie istnieje`);
+    }
+    const oneUser = await User.findOneByOrFail({
+      id,
+    });
+    return { message:true, user:oneUser, };
   }
 
   async remove(id: string) {
