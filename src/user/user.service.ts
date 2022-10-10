@@ -90,7 +90,7 @@ export class UserService {
     const oneUser = await User.findOneByOrFail({
       id,
     });
-    return { message:true, user:oneUser, };
+    return { message: true, user: { email: oneUser.email, role:oneUser.role, }, };
   }
 
   async remove(id: string) {
