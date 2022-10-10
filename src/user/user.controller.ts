@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Get, UseGuards, UsePipes, ValidationPipe, Delete, Param, } from '@nestjs/common';
+import { Body, Controller, Post, Get, UseGuards, UsePipes, ValidationPipe, Delete, Param, Patch, } from '@nestjs/common';
 import { AuthGuard, } from '@nestjs/passport';
 import { UserRoleEnum, } from '../interface/user-role';
 import { Roles, } from '../decorators/roles.decorator';
@@ -48,11 +48,19 @@ export class UserController {
     return this.userService.getOne(id);
   }
 
+  @Patch('/:id')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(UserRoleEnum.ADMIN)
+  async update(
+  @Param('id') id: string,
+  @Body() updateUserDto: UpdateUserDto,
+  @UserObj() user: User) {
+    return this.userService.update(id, updateUserDto, user);
+  }
+
   @Delete('/:id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(UserRoleEnum.ADMIN)
   async DeleteUser(
-    @Param('id') id: string) {
-    return this.userService.remove(id);
-  }
+    @Param('id') id: string) { return this.userService.remove(id); }
 }
