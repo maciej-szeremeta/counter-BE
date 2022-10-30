@@ -3,12 +3,13 @@ import { AuthGuard, } from '@nestjs/passport';
 import { UserRoleEnum, } from '../interface/user-role';
 import { Roles, } from '../decorators/roles.decorator';
 import { RolesGuard, } from '../guards/roles.guard';
-import { GetAllUsersRes, GetOneUsersRes, UserRegisterRes, } from '../interface/user';
+import { GetAllUsersRes, GetOneUserRes, UserRegisterRes, } from '../interface/user';
 import { RegisterAdminDto, } from './dto/register-admin.dto';
 import { UserService, } from './user.service';
 import { RegisterUserDto, } from './dto/register-user.dto';
 import { User, } from './entities/user.entity';
 import { UserObj, } from '../decorators/user-obj.decorator';
+import { UpdateUserDto, } from './dto/update-user.dto';
 
 @Controller('/user')
 export class UserController {
@@ -44,11 +45,17 @@ export class UserController {
   @Get('/:id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(UserRoleEnum.ADMIN)
-  getOneProduct(@Param('id') id: string): Promise<GetOneUsersRes> {
+  async getOneUser(@Param('id') id: string): Promise<GetOneUserRes> {
     return this.userService.getOne(id);
   }
 
-  @Patch('/:id')
+  @Delete('/:id')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(UserRoleEnum.ADMIN)
+  async deleteUser(
+    @Param('id') id: string) { return this.userService.remove(id); }
+
+  @Patch('/update-user/:id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(UserRoleEnum.ADMIN)
   async update(
@@ -58,9 +65,4 @@ export class UserController {
     return this.userService.update(id, updateUserDto, user);
   }
 
-  @Delete('/:id')
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles(UserRoleEnum.ADMIN)
-  async DeleteUser(
-    @Param('id') id: string) { return this.userService.remove(id); }
 }

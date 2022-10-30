@@ -3,9 +3,10 @@ import { Injectable, ConflictException, NotFoundException, } from '@nestjs/commo
 import { RegisterAdminDto, } from './dto/register-admin.dto';
 import { User, } from './entities/user.entity';
 import { UserRoleEnum, } from '../interface/user-role';
-import { GetAllUsersRes, GetOneUsersRes, UserEntity, UserRegisterRes, } from '../interface/user';
+import { GetAllUsersRes, GetOneUserRes, UserEntity, UserRegisterRes, } from '../interface/user';
 import { RegisterUserDto, } from './dto/register-user.dto';
 import { v4 as uuid, } from 'uuid';
+import { UpdateUserDto, } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
@@ -54,12 +55,11 @@ export class UserService {
     const user = await User.findOneBy({ email: newUser.email, });
     
     if (user) {
-      throw new ConflictException('Taki użytkownik istnieje już w bazie.');
+      throw new ConflictException([ 'Taki użytkownik istnieje już w bazie.', ]);
     }
     const registerUser = new User();
 
     registerUser.email = newUser.email;
-    registerUser.createdBy = userRole.id;
     registerUser.pwdHash = await hashPwd(newUser.pwd);
     registerUser.isActive= true;
     await registerUser.save();
@@ -82,7 +82,7 @@ export class UserService {
     });
   }
 
-  async getOne(id: string): Promise<GetOneUsersRes> {
+  async getOne(id: string): Promise<GetOneUserRes> {
     const user = await User.findOneBy({ id, });
     if (!user) {
       throw new NotFoundException(`User ${id} nie istnieje`);
@@ -90,7 +90,7 @@ export class UserService {
     const oneUser = await User.findOneByOrFail({
       id,
     });
-    return { message: true, user: { email: oneUser.email, role:oneUser.role, }, };
+    return { message: true, user: { id:oneUser.id, email: oneUser.email, role:oneUser.role, }, };
   }
 
   async remove(id: string) {
@@ -101,4 +101,26 @@ export class UserService {
     await User.delete(id);
     return { message:true, user:deletedUser.email, };
   }
+
+  async update(id:string, user: UpdateUserDto, userRole: User): Promise<UserRegisterRes> {
+
+    const updateUser = await User.findOneBy({ id, });
+    
+    if (!updateUser) {
+      throw new NotFoundException([ `User ${id} nie istnieje`, ]);
+    }
+
+    const foundUser = await User.findOneBy({ email: user.email, });
+
+    if (foundUser && foundUser.id !== id) {
+      throw new ConflictException([ 'Taki użytkownik istnieje już w bazie.', ]);
+    }
+    const { email, role, } = user;
+
+    updateUser.email = email || updateUser.email;
+    updateUser.role = role || updateUser.role;
+    updateUser.createdBy = userRole.id;
+    await updateUser.save();
+    return updateUser;
+  };
 }

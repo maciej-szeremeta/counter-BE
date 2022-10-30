@@ -17,7 +17,7 @@ export type UserRegisterRes = Pick<UserEntity, 'id' | 'email'>;
 
 export type GetAllUsersRes = UserEntity[];
 
-export type GetOneUsersRes = { message: true; user:Pick<UserEntity, 'email'|'role'>; };
+export type GetOneUserRes = { message: true; user:Pick<UserEntity, 'email'|'role'|'id'>; };
 
 export interface DeletedUserRes {
    msg: boolean;
