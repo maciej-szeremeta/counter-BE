@@ -22,4 +22,6 @@ export type GetOneUserRes = { message: true; user:Pick<UserEntity, 'email'|'role
 export interface DeletedUserRes {
    msg: boolean;
    user: string;
-}
+};
+
+export type UpdateUserRes = UserEntity[];
